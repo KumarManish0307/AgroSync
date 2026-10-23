@@ -27,16 +27,16 @@
             font-family: 'Inter', sans-serif;
             background-color: #03080f;
             color: #f8fafc;
-            /* Lighter realistic background overlay for bright & clear rice field view */
+            /* Vibrant & Realistic Rice Paddy Field Background with balanced overlay */
             background-image: 
-                linear-gradient(rgba(3, 8, 15, 0.45), rgba(3, 8, 15, 0.60)),
-                url('https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=1920&q=80');
+                linear-gradient(rgba(3, 8, 15, 0.35), rgba(3, 8, 15, 0.50)),
+                url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(3, 8, 15, 0.6); }
+        ::-webkit-scrollbar-track { background: rgba(3, 8, 15, 0.5); }
         ::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.5); border-radius: 9999px; }
         @keyframes spinImpeller { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .spin-active { animation: spinImpeller 1.2s linear infinite; }
@@ -48,8 +48,8 @@
         .gauge-ring { transition: stroke-dashoffset 0.45s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease; }
         .otp-input:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25); }
         .farm-card {
-            background: rgba(11, 19, 32, 0.40);
-            border: 1px solid rgba(52, 211, 153, 0.3);
+            background: rgba(11, 19, 32, 0.45);
+            border: 1px solid rgba(52, 211, 153, 0.35);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
@@ -215,7 +215,7 @@
         </div>
     </div>
 
-    <header class="sticky top-0 z-30 bg-[#03080f]/50 backdrop-blur-md border-b border-emerald-500/20 px-4 sm:px-6 py-3.5 shadow-lg">
+    <header class="sticky top-0 z-30 bg-[#03080f]/40 backdrop-blur-md border-b border-emerald-500/20 px-4 sm:px-6 py-3.5 shadow-lg">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
                 <label for="customLogoInput" title="AgroSync Official Logo (Click to upload custom file)" class="cursor-pointer group relative w-14 h-14 rounded-full bg-slate-950/80 flex items-center justify-center shadow-lg shadow-emerald-950/60 overflow-hidden border-2 border-[#6b8e3d] shrink-0">
@@ -272,7 +272,7 @@
             </div>
 
             <div class="flex items-center gap-3 flex-wrap">
-                <div id="headerUserBadge" class="flex items-center gap-2.5 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
+                <div id="headerUserBadge" class="flex items-center gap-2.5 bg-slate-950/50 px-3 py-1.5 rounded-xl border border-slate-800">
                     <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-bold">
                         <i class="fa-solid fa-user-shield"></i>
                     </div>
@@ -322,7 +322,7 @@
                     </div>
 
                     <div class="space-y-2 border-t border-slate-700/60 pt-3">
-                        <div class="w-full h-2 bg-slate-950/40 rounded-full overflow-hidden">
+                        <div class="w-full h-2 bg-slate-950/30 rounded-full overflow-hidden">
                             <div id="moistureLinearBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 28%"></div>
                         </div>
                         <div class="flex justify-between text-xs text-slate-200">
@@ -347,7 +347,7 @@
                         </div>
                     </div>
 
-                    <div class="my-4 bg-slate-950/30 border border-white/10 rounded-xl p-3.5 space-y-2 text-xs">
+                    <div class="my-4 bg-slate-950/20 border border-white/10 rounded-xl p-3.5 space-y-2 text-xs">
                         <div class="flex justify-between">
                             <span class="text-slate-200">Active Mode:</span>
                             <span id="cardModeText" class="font-bold text-emerald-300">AUTO MODE</span>
@@ -380,14 +380,14 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 my-4">
-                        <div class="bg-slate-950/30 border border-white/10 rounded-xl p-3">
+                        <div class="bg-slate-950/20 border border-white/10 rounded-xl p-3">
                             <span class="text-[11px] text-amber-300 flex items-center gap-1">
                                 <i class="fa-solid fa-sun"></i> Temp
                             </span>
                             <div id="tempCardValue" class="text-2xl font-extrabold text-white mt-1">29.6°C</div>
                             <span class="text-[10px] text-slate-300">Ambient Air</span>
                         </div>
-                        <div class="bg-slate-950/30 border border-white/10 rounded-xl p-3">
+                        <div class="bg-slate-950/20 border border-white/10 rounded-xl p-3">
                             <span class="text-[11px] text-sky-300 flex items-center gap-1">
                                 <i class="fa-solid fa-droplet"></i> Humidity
                             </span>
@@ -418,7 +418,7 @@
                             <span id="tankCardValue" class="text-3xl font-extrabold text-white">82%</span>
                             <span id="tankLitersText" class="text-xs text-slate-200">~410 Liters</span>
                         </div>
-                        <div class="w-full h-4 bg-slate-950/40 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
+                        <div class="w-full h-4 bg-slate-950/30 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
                             <div id="tankLevelBar" class="h-full bg-gradient-to-r from-sky-500 to-cyan-400 rounded-full transition-all duration-500" style="width: 82%"></div>
                         </div>
                         <div class="flex items-center justify-between text-[11px] text-slate-200">
@@ -449,7 +449,7 @@
                             <label class="text-xs font-semibold uppercase tracking-wider text-slate-200 block mb-2">
                                 1. Operation Mode
                             </label>
-                            <div class="grid grid-cols-2 gap-2 bg-slate-950/40 p-1.5 rounded-xl border border-slate-700/60">
+                            <div class="grid grid-cols-2 gap-2 bg-slate-950/30 p-1.5 rounded-xl border border-slate-700/60">
                                 <button id="modeAutoBtn" onclick="changeMode('AUTO')"
                                     class="py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 bg-emerald-600 text-white shadow transition-all">
                                     <i class="fa-solid fa-robot"></i>
@@ -463,7 +463,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-950/30 border border-white/10 rounded-xl p-4">
+                        <div class="bg-slate-950/20 border border-white/10 rounded-xl p-4">
                             <div class="flex items-center justify-between gap-2">
                                 <div>
                                     <h3 class="text-sm font-bold text-white">Remote Pump Switch</h3>
@@ -498,19 +498,19 @@
                             One-Click Crop Presets:
                         </label>
                         <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
-                            <button onclick="selectCropPreset('Wheat', 30)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Wheat', 30)" class="py-2 px-3 rounded-xl bg-slate-950/20 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🌾 Wheat</span>
                                 <span class="text-emerald-300">30%</span>
                             </button>
-                            <button onclick="selectCropPreset('Rice/Paddy', 55)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Rice/Paddy', 55)" class="py-2 px-3 rounded-xl bg-slate-950/20 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🌱 Rice</span>
                                 <span class="text-emerald-300">55%</span>
                             </button>
-                            <button onclick="selectCropPreset('Tomato', 40)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Tomato', 40)" class="py-2 px-3 rounded-xl bg-slate-950/20 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🍅 Tomato</span>
                                 <span class="text-emerald-300">40%</span>
                             </button>
-                            <button onclick="selectCropPreset('Mustard', 28)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Mustard', 28)" class="py-2 px-3 rounded-xl bg-slate-950/20 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🌼 Mustard</span>
                                 <span class="text-emerald-300">28%</span>
                             </button>
@@ -537,7 +537,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full h-60 sm:h-64 bg-slate-950/30 rounded-xl border border-slate-700/60 p-2 relative">
+                    <div class="w-full h-60 sm:h-64 bg-slate-950/20 rounded-xl border border-slate-700/60 p-2 relative">
                         <canvas id="cloudChartCanvas" class="w-full h-full block"></canvas>
                     </div>
 
@@ -558,7 +558,7 @@
                             </div>
                         </div>
 
-                        <div id="cloudEventLogBox" class="bg-slate-950/30 border border-slate-700/60 rounded-xl p-3 h-28 overflow-y-auto font-mono text-xs space-y-1.5">
+                        <div id="cloudEventLogBox" class="bg-slate-950/20 border border-slate-700/60 rounded-xl p-3 h-28 overflow-y-auto font-mono text-xs space-y-1.5">
                         </div>
                     </div>
                 </div>
@@ -566,7 +566,7 @@
         </section>
     </main>
 
-    <footer class="bg-[#03080f]/50 border-t border-emerald-500/20 py-4 px-4 text-center text-xs text-slate-300 backdrop-blur-md">
+    <footer class="bg-[#03080f]/40 border-t border-emerald-500/20 py-4 px-4 text-center text-xs text-slate-300 backdrop-blur-md">
         Created by AgroSync
     </footer>
 
