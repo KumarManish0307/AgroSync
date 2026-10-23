@@ -115,11 +115,11 @@
                         <i class="fa-solid fa-lock"></i> Secure OTP
                     </span>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">AgroSync Login</h2>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight mt-1">AgroSync Login</h2>
                 <p class="text-xs text-slate-300 mt-1">Verify mobile number to access rice paddy irrigation</p>
             </div>
 
-            <!-- STEP 1: MOBILE NUMBER INPUT (BLANK FIELDS FOR FRESH ENTRY) -->
+            <!-- STEP 1: MOBILE NUMBER INPUT -->
             <form id="loginStepPhone" onsubmit="handleSendOtp(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-200 mb-1.5">
@@ -709,7 +709,6 @@
         }
 
         function logoutFarmer() {
-            // Clear inputs so next login is fresh
             document.getElementById('farmerNameInput').value = '';
             document.getElementById('farmerPhoneInput').value = '';
             backToPhoneStep();
@@ -1067,7 +1066,6 @@
                 svgEl.classList.add('hidden');
             }
 
-            // Ensure login inputs start completely blank for a fresh entry every time
             document.getElementById('farmerNameInput').value = '';
             document.getElementById('farmerPhoneInput').value = '';
             document.getElementById('authLoginOverlay').classList.remove('hidden');
