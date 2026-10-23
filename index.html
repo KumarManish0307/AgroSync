@@ -27,16 +27,17 @@
             font-family: 'Inter', sans-serif;
             background-color: #03080f;
             color: #f8fafc;
+            /* Lighter background gradient overlay to make the rice field image bright and realistic */
             background-image: 
-                linear-gradient(rgba(3, 8, 15, 0.55), rgba(3, 8, 15, 0.65)),
-                url('https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=1920&q=80');
+                linear-gradient(rgba(3, 8, 15, 0.35), rgba(3, 8, 15, 0.45)),
+                url('https://i.pinimg.com/1200x/f4/54/60/f45460cf253f39e0574d12e18700bedc.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(3, 8, 15, 0.4); }
-        ::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.4); border-radius: 9999px; }
+        ::-webkit-scrollbar-track { background: rgba(3, 8, 15, 0.3); }
+        ::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.5); border-radius: 9999px; }
         @keyframes spinImpeller { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .spin-active { animation: spinImpeller 1.2s linear infinite; }
         @keyframes glowPulse {
@@ -47,16 +48,16 @@
         .gauge-ring { transition: stroke-dashoffset 0.45s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease; }
         .otp-input:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25); }
         .farm-card {
-            background: rgba(11, 19, 32, 0.42);
-            border: 1px solid rgba(52, 211, 153, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(11, 19, 32, 0.55);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
 
-    <div id="authLoginOverlay" class="fixed inset-0 z-50 bg-[#03080f]/90 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
+    <div id="authLoginOverlay" class="fixed inset-0 z-50 bg-[#03080f]/85 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
         <!-- SMS OTP Notification Popup at Top -->
         <div id="smsOtpPopup" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden w-full max-w-sm bg-slate-900/95 border-2 border-emerald-500 rounded-2xl p-4 shadow-2xl transition-all">
             <div class="flex items-center justify-between gap-3">
@@ -214,7 +215,7 @@
         </div>
     </div>
 
-    <header class="sticky top-0 z-30 bg-[#03080f]/60 backdrop-blur-md border-b border-emerald-500/20 px-4 sm:px-6 py-3.5 shadow-lg">
+    <header class="sticky top-0 z-30 bg-[#03080f]/50 backdrop-blur-md border-b border-emerald-500/20 px-4 sm:px-6 py-3.5 shadow-lg">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
                 <label for="customLogoInput" title="AgroSync Official Logo (Click to upload custom file)" class="cursor-pointer group relative w-14 h-14 rounded-full bg-slate-950/80 flex items-center justify-center shadow-lg shadow-emerald-950/60 overflow-hidden border-2 border-[#6b8e3d] shrink-0">
@@ -271,7 +272,7 @@
             </div>
 
             <div class="flex items-center gap-3 flex-wrap">
-                <div id="headerUserBadge" class="flex items-center gap-2.5 bg-slate-950/70 px-3 py-1.5 rounded-xl border border-slate-800">
+                <div id="headerUserBadge" class="flex items-center gap-2.5 bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800">
                     <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-bold">
                         <i class="fa-solid fa-user-shield"></i>
                     </div>
@@ -296,7 +297,7 @@
                 <div class="farm-card rounded-2xl p-5 flex flex-col justify-between shadow-lg">
                     <div class="flex items-start justify-between">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Soil Moisture</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Soil Moisture</span>
                             <div class="mt-1">
                                 <span id="moistureStatusPill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40">
                                     <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span> Critical Dry
@@ -321,10 +322,10 @@
                     </div>
 
                     <div class="space-y-2 border-t border-slate-700/60 pt-3">
-                        <div class="w-full h-2 bg-slate-950/60 rounded-full overflow-hidden">
+                        <div class="w-full h-2 bg-slate-950/50 rounded-full overflow-hidden">
                             <div id="moistureLinearBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 28%"></div>
                         </div>
-                        <div class="flex justify-between text-xs text-slate-300">
+                        <div class="flex justify-between text-xs text-slate-200">
                             <span>Cutoff: <strong class="text-sky-300">&gt;= 90%</strong></span>
                             <span id="adcRawText" class="font-mono">ADC: 2940</span>
                         </div>
@@ -334,7 +335,7 @@
                 <div id="pumpCardContainer" class="farm-card rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Water Pump Status</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Water Pump Status</span>
                             <div class="mt-1">
                                 <span id="pumpStatePill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/25 text-emerald-200 border border-emerald-500/40">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> ON
@@ -346,22 +347,22 @@
                         </div>
                     </div>
 
-                    <div class="my-4 bg-slate-950/30 border border-white/10 rounded-xl p-3.5 space-y-2 text-xs">
+                    <div class="my-4 bg-slate-950/25 border border-white/10 rounded-xl p-3.5 space-y-2 text-xs">
                         <div class="flex justify-between">
-                            <span class="text-slate-300">Active Mode:</span>
+                            <span class="text-slate-200">Active Mode:</span>
                             <span id="cardModeText" class="font-bold text-emerald-300">AUTO MODE</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-slate-300">Relay GPIO 26:</span>
+                            <span class="text-slate-200">Relay GPIO 26:</span>
                             <span id="cardRelayLogic" class="font-mono text-emerald-300">LOW (ON - 0V)</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-slate-300">Water Flow:</span>
+                            <span class="text-slate-200">Water Flow:</span>
                             <span id="cardFlowRate" class="font-semibold text-sky-300">2.0 L/min</span>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs text-slate-300 border-t border-slate-700/60 pt-3">
+                    <div class="flex items-center justify-between text-xs text-slate-200 border-t border-slate-700/60 pt-3">
                         <span>Cutoff Rule: <strong class="text-sky-300">Stays ON till 90%</strong></span>
                         <span id="pumpReasonText" class="text-emerald-300 font-semibold">Irrigating...</span>
                     </div>
@@ -370,7 +371,7 @@
                 <div class="farm-card rounded-2xl p-5 flex flex-col justify-between shadow-lg">
                     <div class="flex items-start justify-between">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Weather / DHT11</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Weather / DHT11</span>
                             <p class="text-xs text-slate-300 mt-0.5">Field Micro-Climate</p>
                         </div>
                         <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300">
@@ -379,14 +380,14 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 my-4">
-                        <div class="bg-slate-950/30 border border-white/10 rounded-xl p-3">
+                        <div class="bg-slate-950/25 border border-white/10 rounded-xl p-3">
                             <span class="text-[11px] text-amber-300 flex items-center gap-1">
                                 <i class="fa-solid fa-sun"></i> Temp
                             </span>
                             <div id="tempCardValue" class="text-2xl font-extrabold text-white mt-1">29.6°C</div>
                             <span class="text-[10px] text-slate-300">Ambient Air</span>
                         </div>
-                        <div class="bg-slate-950/30 border border-white/10 rounded-xl p-3">
+                        <div class="bg-slate-950/25 border border-white/10 rounded-xl p-3">
                             <span class="text-[11px] text-sky-300 flex items-center gap-1">
                                 <i class="fa-solid fa-droplet"></i> Humidity
                             </span>
@@ -395,7 +396,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs text-slate-300 border-t border-slate-700/60 pt-3">
+                    <div class="flex items-center justify-between text-xs text-slate-200 border-t border-slate-700/60 pt-3">
                         <span>Heat Index: <strong class="text-amber-300">31.2°C</strong></span>
                         <span>Sensor: <strong class="text-white">DHT11</strong></span>
                     </div>
@@ -404,7 +405,7 @@
                 <div class="farm-card rounded-2xl p-5 flex flex-col justify-between shadow-lg">
                     <div class="flex items-start justify-between">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Water Tank Level</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Water Tank Level</span>
                             <p id="tankAlertBadge" class="text-xs text-sky-300 font-semibold mt-0.5">Sufficient Storage</p>
                         </div>
                         <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-300">
@@ -415,18 +416,18 @@
                     <div class="my-4 space-y-2.5">
                         <div class="flex items-baseline justify-between">
                             <span id="tankCardValue" class="text-3xl font-extrabold text-white">82%</span>
-                            <span id="tankLitersText" class="text-xs text-slate-300">~410 Liters</span>
+                            <span id="tankLitersText" class="text-xs text-slate-200">~410 Liters</span>
                         </div>
-                        <div class="w-full h-4 bg-slate-950/60 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
+                        <div class="w-full h-4 bg-slate-950/50 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
                             <div id="tankLevelBar" class="h-full bg-gradient-to-r from-sky-500 to-cyan-400 rounded-full transition-all duration-500" style="width: 82%"></div>
                         </div>
-                        <div class="flex items-center justify-between text-[11px] text-slate-300">
+                        <div class="flex items-center justify-between text-[11px] text-slate-200">
                             <span>Dry-Run Cutoff: 10%</span>
                             <span class="text-sky-300 font-semibold">HC-SR04 Active</span>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs text-slate-300 border-t border-slate-700/60 pt-3">
+                    <div class="flex items-center justify-between text-xs text-slate-200 border-t border-slate-700/60 pt-3">
                         <span>Sensor: <strong class="text-white">HC-SR04</strong></span>
                         <span>Safety Cutoff: <strong class="text-emerald-300">ON</strong></span>
                     </div>
@@ -445,24 +446,24 @@
                         </div>
 
                         <div>
-                            <label class="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-2">
+                            <label class="text-xs font-semibold uppercase tracking-wider text-slate-200 block mb-2">
                                 1. Operation Mode
                             </label>
-                            <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-1.5 rounded-xl border border-slate-700/60">
+                            <div class="grid grid-cols-2 gap-2 bg-slate-950/50 p-1.5 rounded-xl border border-slate-700/60">
                                 <button id="modeAutoBtn" onclick="changeMode('AUTO')"
                                     class="py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 bg-emerald-600 text-white shadow transition-all">
                                     <i class="fa-solid fa-robot"></i>
                                     <span>AUTO MODE</span>
                                 </button>
                                 <button id="modeManualBtn" onclick="changeMode('MANUAL')"
-                                    class="py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-300 hover:text-white transition-all">
+                                    class="py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-200 hover:text-white transition-all">
                                     <i class="fa-solid fa-hand-pointer"></i>
                                     <span>MANUAL MODE</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="bg-slate-950/30 border border-white/10 rounded-xl p-4">
+                        <div class="bg-slate-950/25 border border-white/10 rounded-xl p-4">
                             <div class="flex items-center justify-between gap-2">
                                 <div>
                                     <h3 class="text-sm font-bold text-white">Remote Pump Switch</h3>
@@ -493,23 +494,23 @@
                     </div>
 
                     <div class="border-t border-slate-700/60 pt-4">
-                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-2.5">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-200 block mb-2.5">
                             One-Click Crop Presets:
                         </label>
                         <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
-                            <button onclick="selectCropPreset('Wheat', 30)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Wheat', 30)" class="py-2 px-3 rounded-xl bg-slate-950/25 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🌾 Wheat</span>
                                 <span class="text-emerald-300">30%</span>
                             </button>
-                            <button onclick="selectCropPreset('Rice/Paddy', 55)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Rice/Paddy', 55)" class="py-2 px-3 rounded-xl bg-slate-950/25 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🌱 Rice</span>
                                 <span class="text-emerald-300">55%</span>
                             </button>
-                            <button onclick="selectCropPreset('Tomato', 40)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Tomato', 40)" class="py-2 px-3 rounded-xl bg-slate-950/25 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🍅 Tomato</span>
                                 <span class="text-emerald-300">40%</span>
                             </button>
-                            <button onclick="selectCropPreset('Mustard', 28)" class="py-2 px-3 rounded-xl bg-slate-950/30 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                            <button onclick="selectCropPreset('Mustard', 28)" class="py-2 px-3 rounded-xl bg-slate-950/25 hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
                                 <span>🌼 Mustard</span>
                                 <span class="text-emerald-300">28%</span>
                             </button>
@@ -536,13 +537,13 @@
                         </div>
                     </div>
 
-                    <div class="w-full h-60 sm:h-64 bg-slate-950/30 rounded-xl border border-slate-700/60 p-2 relative">
+                    <div class="w-full h-60 sm:h-64 bg-slate-950/25 rounded-xl border border-slate-700/60 p-2 relative">
                         <canvas id="cloudChartCanvas" class="w-full h-full block"></canvas>
                     </div>
 
                     <div class="border-t border-slate-700/60 pt-3.5 space-y-2.5">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
                                 <i class="fa-solid fa-database text-emerald-400"></i>
                                 Event & Telemetry Log
                             </span>
@@ -557,7 +558,7 @@
                             </div>
                         </div>
 
-                        <div id="cloudEventLogBox" class="bg-slate-950/30 border border-slate-700/60 rounded-xl p-3 h-28 overflow-y-auto font-mono text-xs space-y-1.5">
+                        <div id="cloudEventLogBox" class="bg-slate-950/25 border border-slate-700/60 rounded-xl p-3 h-28 overflow-y-auto font-mono text-xs space-y-1.5">
                         </div>
                     </div>
                 </div>
@@ -565,7 +566,7 @@
         </section>
     </main>
 
-    <footer class="bg-[#03080f]/60 border-t border-emerald-500/20 py-4 px-4 text-center text-xs text-slate-300 backdrop-blur-md">
+    <footer class="bg-[#03080f]/50 border-t border-emerald-500/20 py-4 px-4 text-center text-xs text-slate-300 backdrop-blur-md">
         Created by AgroSync
     </footer>
 
@@ -825,12 +826,12 @@
 
             if (appState.mode === 'AUTO') {
                 btnAuto.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 bg-emerald-600 text-white shadow transition-all';
-                btnManual.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-300 hover:text-white transition-all';
+                btnManual.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-200 hover:text-white transition-all';
                 remoteBtn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-slate-800/80 text-slate-400 border border-slate-700 cursor-not-allowed';
                 remoteBtnText.textContent = appState.pump ? 'Auto ON' : 'Auto OFF';
             } else {
                 btnManual.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 bg-amber-500 text-slate-950 shadow transition-all';
-                btnAuto.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-300 hover:text-white transition-all';
+                btnAuto.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-200 hover:text-white transition-all';
                 if (appState.pump) {
                     remoteBtn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white shadow cursor-pointer';
                     remoteBtnText.textContent = 'Turn Pump OFF';
