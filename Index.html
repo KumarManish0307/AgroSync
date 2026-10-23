@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroSync Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="Green Vintage Agriculture and Farming Logo (1).ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #03080f;
+            color: #f8fafc;
+            background-image: 
+                linear-gradient(rgba(3, 8, 15, 0.45), rgba(3, 8, 15, 0.60)),
+                url('https://wallpapercave.com/wp/wp3069320.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(3, 8, 15, 0.6); }
+        ::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.5); border-radius: 9999px; }
+        @keyframes spinImpeller { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spin-active { animation: spinImpeller 1.2s linear infinite; }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.35); }
+            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.75); }
+        }
+        .pump-glow { animation: glowPulse 2s infinite; }
+        .gauge-ring { transition: stroke-dashoffset 0.45s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease; }
+        .otp-input:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25); }
+        .farm-card {
+            background: rgba(11, 19, 32, 0.42);
+            border: 1px solid rgba(52, 211, 153, 0.30);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
+
+    <div id="authLoginOverlay" class="fixed inset-0 z-50 bg-[#03080f]/90 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto">
+        <div id="smsOtpPopup" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden w-full max-w-sm bg-slate-900/95 border-2 border-emerald-500 rounded-2xl p-4 shadow-2xl transition-all">
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                        <i class="fa-solid fa-comment-sms text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-400">AgroSync SMS Gateway</span>
+                            <span class="text-[10px] text-slate-400">Just now</span>
+                        </div>
+                        <p class="text-xs text-slate-200 mt-0.5">
+                            Login OTP: <strong id="generatedOtpDisplay" class="text-base font-mono font-extrabold text-white bg-emerald-600/30 px-2 py-0.5 rounded border border-emerald-400/40">4829</strong>
+                        </p>
+                    </div>
+                </div>
+                <button onclick="autofillDemoOtp()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold shrink-0 shadow transition">
+                    Auto-Fill
+                </button>
+            </div>
+        </div>
+
+        <div class="w-full max-w-md farm-card rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden my-auto">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex flex-col items-center text-center mb-6">
+                <div class="w-20 h-20 rounded-full bg-slate-950/90 border-2 border-[#6b8e3d] shadow-xl flex items-center justify-center overflow-hidden mb-3">
+                    <svg class="w-full h-full" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="60" cy="60" r="58" fill="#5e7d32" stroke="#7da146" stroke-width="3"/>
+                        <circle cx="60" cy="60" r="50" fill="#132530" stroke="#c8a248" stroke-width="1.5"/>
+                        <clipPath id="loginFieldClip"><circle cx="60" cy="60" r="35"/></clipPath>
+                        <g clip-path="url(#loginFieldClip)">
+                            <rect x="25" y="25" width="70" height="42" fill="#fef3c7"/>
+                            <path d="M20 62 Q42 50 65 58 T100 56 L100 72 L20 72 Z" fill="#4d7c36"/>
+                            <rect x="25" y="62" width="70" height="35" fill="#eab308"/>
+                            <path d="M25 84 L95 76 L95 96 L25 96 Z" fill="#854d0e"/>
+                            <rect x="62" y="47" width="16" height="14" rx="1.5" fill="#2e6f40" stroke="#1b4326" stroke-width="1.5"/>
+                            <rect x="64" y="49" width="12" height="9" fill="#bae6fd" opacity="0.85"/>
+                            <path d="M60 47 L80 47" stroke="#16a34a" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M53 56 L53 46 L55 45" stroke="#1e293b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                            <rect x="46" y="55" width="18" height="12" rx="2" fill="#228b22" stroke="#14532d" stroke-width="1.2"/>
+                            <circle cx="72" cy="68" r="9.5" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                            <circle cx="72" cy="68" r="4.8" fill="#eab308"/>
+                            <circle cx="51" cy="70" r="6.5" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                            <circle cx="51" cy="70" r="3" fill="#eab308"/>
+                        </g>
+                        <circle cx="60" cy="60" r="35" fill="none" stroke="#d4af37" stroke-width="2"/>
+                        <text x="60" y="19" text-anchor="middle" fill="#e2e8f0" font-size="6.5" font-weight="800" letter-spacing="1.2">SMART IRRIGATION</text>
+                        <text x="60" y="106" text-anchor="middle" fill="#ffffff" font-size="9.5" font-weight="900" letter-spacing="1.5">AGRO SYNC</text>
+                    </svg>
+                </div>
+                <div class="flex items-center justify-center gap-2 mb-1.5">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                        <i class="fa-solid fa-wheat-awn"></i> Rice Paddy IoT Portal
+                    </span>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                        <i class="fa-solid fa-lock"></i> Secure OTP
+                    </span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">AgroSync Login</h2>
+                <p class="text-xs text-slate-300 mt-1">Verify mobile number to access rice paddy irrigation</p>
+            </div>
+
+            <!-- STEP 1: MOBILE NUMBER INPUT -->
+            <form id="loginStepPhone" onsubmit="handleSendOtp(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-200 mb-1.5">
+                        Farmer / Operator Name
+                    </label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user-check absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input id="farmerNameInput" type="text" required placeholder="Enter your full name (e.g. AgroSync)" value="AgroSync"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-200 mb-1.5">
+                        Mobile Number (10 Digits)
+                    </label>
+                    <div class="flex items-center rounded-xl bg-slate-950/80 border border-slate-700 focus-within:border-emerald-500 overflow-hidden transition">
+                        <span class="px-3.5 py-3 bg-slate-900/90 text-slate-200 font-bold text-sm border-r border-slate-700 flex items-center gap-1.5 select-none">
+                            🇮🇳 +91
+                        </span>
+                        <input id="farmerPhoneInput" type="tel" maxlength="10" pattern="[0-9]{10}" required
+                            placeholder="9876543210" value="9876543210"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            class="w-full px-3.5 py-3 bg-transparent text-sm font-semibold tracking-wider text-white placeholder-slate-600 focus:outline-none">
+                    </div>
+                </div>
+
+                <div id="phoneErrorMsg" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl px-3 py-2 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>Please enter a valid 10-digit mobile number.</span>
+                </div>
+
+                <button id="sendOtpSubmitBtn" type="submit" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                    <span id="sendOtpBtnText">Send 4-Digit OTP</span>
+                </button>
+            </form>
+
+            <!-- STEP 2: OTP VERIFICATION -->
+            <form id="loginStepOtp" onsubmit="handleVerifyOtp(event)" class="hidden space-y-5">
+                <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 flex items-center justify-between">
+                    <div class="text-xs">
+                        <span class="text-slate-300 block">OTP dispatched for mobile:</span>
+                        <strong id="displayMaskedPhone" class="text-emerald-400 font-mono text-sm">+91 9876543210</strong>
+                    </div>
+                    <button type="button" onclick="backToPhoneStep()" class="text-xs font-semibold text-sky-400 hover:text-sky-300 underline">
+                        Change Number
+                    </button>
+                </div>
+
+                <div class="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5">
+                    <i class="fa-solid fa-circle-check text-base text-emerald-400"></i>
+                    <span><strong>SMS OTP Dispatched!</strong> Check the notification popup at the top of your screen.</span>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-200">
+                            Enter 4-Digit OTP
+                        </label>
+                        <button type="button" onclick="autofillDemoOtp()" class="text-[11px] font-semibold text-emerald-400 hover:underline">
+                            Quick Fill
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-4 gap-3">
+                        <input type="text" id="otpDigit1" maxlength="1" inputmode="numeric" oninput="moveOtpFocus(this, 'otpDigit2')" onkeydown="backOtpFocus(event, this, null)" class="otp-input w-full h-14 text-center text-xl font-extrabold font-mono rounded-xl bg-slate-950/90 border border-slate-700 text-white focus:outline-none">
+                        <input type="text" id="otpDigit2" maxlength="1" inputmode="numeric" oninput="moveOtpFocus(this, 'otpDigit3')" onkeydown="backOtpFocus(event, this, 'otpDigit1')" class="otp-input w-full h-14 text-center text-xl font-extrabold font-mono rounded-xl bg-slate-950/90 border border-slate-700 text-white focus:outline-none">
+                        <input type="text" id="otpDigit3" maxlength="1" inputmode="numeric" oninput="moveOtpFocus(this, 'otpDigit4')" onkeydown="backOtpFocus(event, this, 'otpDigit2')" class="otp-input w-full h-14 text-center text-xl font-extrabold font-mono rounded-xl bg-slate-950/90 border border-slate-700 text-white focus:outline-none">
+                        <input type="text" id="otpDigit4" maxlength="1" inputmode="numeric" oninput="moveOtpFocus(this, null)" onkeydown="backOtpFocus(event, this, 'otpDigit3')" class="otp-input w-full h-14 text-center text-xl font-extrabold font-mono rounded-xl bg-slate-950/90 border border-slate-700 text-white focus:outline-none">
+                    </div>
+                </div>
+
+                <div id="otpErrorMsg" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl px-3 py-2 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Invalid OTP! Please check the SMS notification at the top.</span>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-unlock-keyhole"></i>
+                    <span>Verify OTP & Open Dashboard</span>
+                </button>
+
+                <div class="flex items-center justify-between text-xs text-slate-300 pt-1">
+                    <span id="resendTimerText">Resend OTP in <strong class="text-slate-100">25s</strong></span>
+                    <button type="button" id="resendOtpBtn" onclick="resendNewOtp()" disabled class="font-bold text-emerald-400 disabled:text-slate-600 disabled:cursor-not-allowed hover:underline">
+                        Resend OTP
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-slate-700/60 flex items-center justify-between text-[11px] text-slate-300">
+                <span><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Secure SMS Gateway</span>
+                <span>AgroSync Identity v2.5</span>
+            </div>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-30 bg-[#03080f]/75 backdrop-blur-md border-b border-emerald-500/20 px-4 sm:px-6 py-3.5 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <label for="customLogoInput" title="AgroSync Official Logo (Click to upload custom file)" class="cursor-pointer group relative w-14 h-14 rounded-full bg-slate-950/80 flex items-center justify-center shadow-lg shadow-emerald-950/60 overflow-hidden border-2 border-[#6b8e3d] shrink-0">
+                    <img id="customLogoImg" src="Green Vintage Agriculture and Farming Logo (1).ico" alt="AgroSync Vintage Tractor Logo" class="w-full h-full object-contain hidden" onload="this.classList.remove('hidden'); document.getElementById('defaultSvgLogo').classList.add('hidden');" onerror="this.classList.add('hidden'); document.getElementById('defaultSvgLogo').classList.remove('hidden');">
+                    
+                    <svg id="defaultSvgLogo" class="w-full h-full" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="60" cy="60" r="58" fill="#5e7d32" stroke="#7da146" stroke-width="3"/>
+                        <circle cx="60" cy="60" r="50" fill="#132530" stroke="#c8a248" stroke-width="1.5"/>
+                        <defs>
+                            <clipPath id="innerFieldClip">
+                                <circle cx="60" cy="60" r="35"/>
+                            </clipPath>
+                        </defs>
+                        <g clip-path="url(#innerFieldClip)">
+                            <rect x="25" y="25" width="70" height="42" fill="#fef3c7"/>
+                            <path d="M20 62 Q42 50 65 58 T100 56 L100 72 L20 72 Z" fill="#4d7c36"/>
+                            <rect x="25" y="62" width="70" height="35" fill="#eab308"/>
+                            <path d="M25 84 L95 76 L95 96 L25 96 Z" fill="#854d0e"/>
+                            <rect x="62" y="47" width="16" height="14" rx="1.5" fill="#2e6f40" stroke="#1b4326" stroke-width="1.5"/>
+                            <rect x="64" y="49" width="12" height="9" fill="#bae6fd" opacity="0.85"/>
+                            <path d="M60 47 L80 47" stroke="#16a34a" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M53 56 L53 46 L55 45" stroke="#1e293b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                            <rect x="46" y="55" width="18" height="12" rx="2" fill="#228b22" stroke="#14532d" stroke-width="1.2"/>
+                            <line x1="49" y1="59" x2="60" y2="59" stroke="#facc15" stroke-width="1.5"/>
+                            <circle cx="72" cy="68" r="9.5" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                            <circle cx="72" cy="68" r="4.8" fill="#eab308"/>
+                            <circle cx="51" cy="70" r="6.5" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                            <circle cx="51" cy="70" r="3" fill="#eab308"/>
+                        </g>
+                        <circle cx="60" cy="60" r="35" fill="none" stroke="#d4af37" stroke-width="2"/>
+                        <circle cx="17" cy="62" r="3" fill="#eab308"/>
+                        <circle cx="103" cy="62" r="3" fill="#eab308"/>
+                        <text x="60" y="19" text-anchor="middle" fill="#e2e8f0" font-size="6.5" font-weight="800" letter-spacing="1.2" font-family="Inter, sans-serif">SMART IRRIGATION</text>
+                        <text x="60" y="106" text-anchor="middle" fill="#ffffff" font-size="9.5" font-weight="900" letter-spacing="1.5" font-family="Inter, sans-serif">AGRO SYNC</text>
+                    </svg>
+
+                    <div class="absolute inset-0 bg-slate-950/75 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[9px] font-bold text-emerald-300 text-center leading-tight p-1">
+                        Change Logo
+                    </div>
+                    <input id="customLogoInput" type="file" accept="image/*,.ico" class="hidden" onchange="handleLogoUpload(event)">
+                </label>
+
+                <div>
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white leading-snug">
+                            AgroSync Dashboard
+                        </h1>
+                        <span id="cloudStatusBadge" class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                            <span id="cloudPulseDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span id="cloudStatusText">Firebase Connected</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 flex-wrap">
+                <div id="headerUserBadge" class="flex items-center gap-2.5 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-slate-800">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-bold">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="text-left leading-tight hidden sm:block">
+                        <div id="loggedFarmerName" class="text-xs font-bold text-white">Manish Kumar</div>
+                        <div id="loggedFarmerPhone" class="text-[10px] font-mono text-emerald-400">+91 9876543210</div>
+                    </div>
+                    <button onclick="logoutFarmer()" title="Logout from Dashboard" class="ml-1 px-2.5 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 text-xs font-bold transition flex items-center gap-1">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="hidden md:inline">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 space-y-6">
+
+        <section id="view-dashboard" class="space-y-6">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                <div class="farm-card rounded-2xl p-5 flex flex-col justify-between shadow-lg">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Soil Moisture</span>
+                            <div class="mt-1">
+                                <span id="moistureStatusPill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span> Critical Dry
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-300">
+                            <i class="fa-solid fa-droplet text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="my-4 flex items-center justify-center relative">
+                        <svg class="w-32 h-32 -rotate-90 transform" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.1)" stroke-width="10" fill="transparent" />
+                            <circle id="moistureRing" cx="60" cy="60" r="50" stroke="#10b981" stroke-width="10"
+                                stroke-dasharray="314.16" stroke-dashoffset="226" stroke-linecap="round" fill="transparent"
+                                class="gauge-ring" />
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span id="moistureCardValue" class="text-3xl font-extrabold text-white">28%</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 border-t border-slate-700/60 pt-3">
+                        <div class="w-full h-2 bg-slate-950/70 rounded-full overflow-hidden">
+                            <div id="moistureLinearBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 28%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-300">
+                            <span>Cutoff: <strong class="text-sky-300">&gt;= 90%</strong></span>
+                            <span id="adcRawText" class="font-mono">ADC: 2940</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pumpCardContainer" class="farm-card rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 shadow-lg">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Water Pump Status</span>
+                            <div class="mt-1">
+                                <span id="pumpStatePill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/25 text-emerald-200 border border-emerald-500/40">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> PUMP ON
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
+                            <i id="pumpImpellerIcon" class="fa-solid fa-fan text-xl spin-active"></i>
+                        </div>
+                    </div>
+
+                    <div class="my-4 farm-card rounded-xl p-3.5 space-y-2 text-xs border border-white/10">
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Active Mode:</span>
+                            <span id="cardModeText" class="font-bold text-emerald-300">AUTO MODE</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Relay GPIO 26:</span>
+                            <span id="cardRelayLogic" class="font-mono text-emerald-300">LOW (ON - 0V)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Water Flow:</span>
+                            <span id="cardFlowRate" class="font-semibold text-sky-300">2.0 L/min</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-300 border-t border-slate-700/60 pt-3">
+                        <span>Cutoff Rule: <strong class="text-sky-300">Stays ON till 90%</strong></span>
+                        <span id="pumpReasonText" class="text-emerald-300 font-semibold">Irrigating...</span>
+                    </div>
+                </div>
+
+                <div class="farm-card rounded-2xl p-5 flex flex-col justify-between shadow-lg">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Weather / DHT11</span>
+                            <p class="text-xs text-slate-300 mt-0.5">Field Micro-Climate</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300">
+                            <i class="fa-solid fa-temperature-three-quarters text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 my-4">
+                        <div class="farm-card rounded-xl p-3 border border-white/10">
+                            <span class="text-[11px] text-amber-300 flex items-center gap-1">
+                                <i class="fa-solid fa-sun"></i> Temp
+                            </span>
+                            <div id="tempCardValue" class="text-2xl font-extrabold text-white mt-1">29.6°C</div>
+                            <span class="text-[10px] text-slate-300">Ambient Air</span>
+                        </div>
+                        <div class="farm-card rounded-xl p-3 border border-white/10">
+                            <span class="text-[11px] text-sky-300 flex items-center gap-1">
+                                <i class="fa-solid fa-droplet"></i> Humidity
+                            </span>
+                            <div id="humCardValue" class="text-2xl font-extrabold text-white mt-1">64%</div>
+                            <span class="text-[10px] text-slate-300">Relative</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-300 border-t border-slate-700/60 pt-3">
+                        <span>Heat Index: <strong class="text-amber-300">31.2°C</strong></span>
+                        <span>Sensor: <strong class="text-white">DHT11</strong></span>
+                    </div>
+                </div>
+
+                <div class="farm-card rounded-2xl p-5 flex flex-col justify-between shadow-lg">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Water Tank Level</span>
+                            <p id="tankAlertBadge" class="text-xs text-sky-300 font-semibold mt-0.5">Sufficient Storage</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-300">
+                            <i class="fa-solid fa-water text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="my-4 space-y-2.5">
+                        <div class="flex items-baseline justify-between">
+                            <span id="tankCardValue" class="text-3xl font-extrabold text-white">82%</span>
+                            <span id="tankLitersText" class="text-xs text-slate-300">~410 Liters</span>
+                        </div>
+                        <div class="w-full h-4 bg-slate-950/70 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
+                            <div id="tankLevelBar" class="h-full bg-gradient-to-r from-sky-500 to-cyan-400 rounded-full transition-all duration-500" style="width: 82%"></div>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-slate-300">
+                            <span>Dry-Run Cutoff: 10%</span>
+                            <span class="text-sky-300 font-semibold">HC-SR04 Active</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-300 border-t border-slate-700/60 pt-3">
+                        <span>Sensor: <strong class="text-white">HC-SR04</strong></span>
+                        <span>Safety Cutoff: <strong class="text-emerald-300">ON</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="farm-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-5 shadow-lg">
+                    <div class="space-y-5">
+                        <div class="border-b border-slate-700/60 pb-3.5">
+                            <h2 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-emerald-400"></i>
+                                Cloud Control Panel
+                            </h2>
+                            <p class="text-xs text-slate-300 mt-0.5">Changes sync immediately to Firebase</p>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-2">
+                                1. Operation Mode
+                            </label>
+                            <div class="grid grid-cols-2 gap-2 bg-slate-950/70 p-1.5 rounded-xl border border-slate-700/60">
+                                <button id="modeAutoBtn" onclick="changeMode('AUTO')"
+                                    class="py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 bg-emerald-600 text-white shadow transition-all">
+                                    <i class="fa-solid fa-robot"></i>
+                                    <span>AUTO MODE</span>
+                                </button>
+                                <button id="modeManualBtn" onclick="changeMode('MANUAL')"
+                                    class="py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-300 hover:text-white transition-all">
+                                    <i class="fa-solid fa-hand-pointer"></i>
+                                    <span>MANUAL MODE</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="farm-card rounded-xl p-4 border border-white/10">
+                            <div class="flex items-center justify-between gap-2">
+                                <div>
+                                    <h3 class="text-sm font-bold text-white">Remote Pump Switch</h3>
+                                    <p id="manualHintText" class="text-[11px] text-slate-300 mt-0.5">
+                                        Switch to MANUAL MODE to control directly
+                                    </p>
+                                </div>
+                                <button id="remotePumpBtn" onclick="toggleRemotePump()"
+                                    class="px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-slate-800/80 text-slate-400 border border-slate-700 cursor-not-allowed">
+                                    <i class="fa-solid fa-power-off"></i>
+                                    <span id="remotePumpBtnText">Turn Pump ON</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-200">Auto Start Threshold:</span>
+                                <span id="thresholdValBadge" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">35%</span>
+                            </div>
+                            <input id="thresholdRangeInput" type="range" min="15" max="75" value="35"
+                                class="w-full accent-amber-500 cursor-pointer"
+                                oninput="changeThreshold(this.value)">
+                            <p class="text-[11px] text-slate-300">
+                                Pump starts below <strong><span id="threshDescNum">35</span>%</strong> and stays ON until moisture reaches <strong>90%</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-700/60 pt-4">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-2.5">
+                            One-Click Crop Presets:
+                        </label>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
+                            <button onclick="selectCropPreset('Wheat', 30)" class="py-2 px-3 rounded-xl farm-card hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                                <span>🌾 Wheat</span>
+                                <span class="text-emerald-300">30%</span>
+                            </button>
+                            <button onclick="selectCropPreset('Rice/Paddy', 55)" class="py-2 px-3 rounded-xl farm-card hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                                <span>🌱 Rice</span>
+                                <span class="text-emerald-300">55%</span>
+                            </button>
+                            <button onclick="selectCropPreset('Tomato', 40)" class="py-2 px-3 rounded-xl farm-card hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                                <span>🍅 Tomato</span>
+                                <span class="text-emerald-300">40%</span>
+                            </button>
+                            <button onclick="selectCropPreset('Mustard', 28)" class="py-2 px-3 rounded-xl farm-card hover:bg-slate-800/60 text-slate-200 transition flex items-center justify-between border border-white/10">
+                                <span>🌼 Mustard</span>
+                                <span class="text-emerald-300">28%</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 farm-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4 shadow-lg">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700/60 pb-3.5">
+                        <div>
+                            <h2 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                                Cloud Analytics: Soil Moisture (%) vs 90% Cutoff
+                            </h2>
+                            <p class="text-xs text-slate-300 mt-0.5">Live telemetry history plotted every 1.5 seconds</p>
+                        </div>
+                        <div class="flex items-center gap-4 text-xs">
+                            <span class="flex items-center gap-1.5 text-emerald-300 font-semibold">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Soil Moisture (%)
+                            </span>
+                            <span class="flex items-center gap-1.5 text-sky-300 font-semibold">
+                                <span class="w-3 h-0.5 bg-sky-400"></span> 90% Shutoff Line
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="w-full h-60 sm:h-64 bg-slate-950/40 rounded-xl border border-slate-700/60 p-2 relative">
+                        <canvas id="cloudChartCanvas" class="w-full h-full block"></canvas>
+                    </div>
+
+                    <div class="border-t border-slate-700/60 pt-3.5 space-y-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-database text-emerald-400"></i>
+                                Event & Telemetry Log
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="exportTelemetryCsv()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow flex items-center gap-1.5 transition">
+                                    <i class="fa-solid fa-file-csv"></i>
+                                    <span>Export CSV Log</span>
+                                </button>
+                                <button onclick="clearCloudLogs()" class="px-2.5 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs transition">
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="cloudEventLogBox" class="bg-slate-950/40 border border-slate-700/60 rounded-xl p-3 h-28 overflow-y-auto font-mono text-xs space-y-1.5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#03080f]/80 border-t border-emerald-500/20 py-4 px-4 text-center text-xs text-slate-300 backdrop-blur-md">
+        Created by AgroSync
+    </footer>
+
+    <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900/95 border border-emerald-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs sm:text-sm backdrop-blur-md">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastText">Synced with Cloud</span>
+    </div>
+
+    <script>
+        const appState = {
+            moisture: 28,
+            temperature: 29.6,
+            humidity: 64,
+            tank: 82,
+            mode: 'AUTO',
+            pump: true,
+            threshold: 35,
+            firebaseUrl: 'https://esop32-project-default-rtdb.asia-southeast1.firebasedatabase.app',
+            isLiveFirebase: true,
+            history: [44, 41, 38, 34, 31, 29, 28, 30, 33, 36, 39, 42],
+            csvRows: [
+                ['Timestamp', 'Soil_Moisture_%', 'Threshold_%', 'Operation_Mode', 'Pump_Status', 'Temp_C', 'Humidity_%']
+            ],
+            currentGeneratedOtp: '',
+            pendingName: 'AgroSync',
+            pendingPhone: '9876543210',
+            otpTimerInterval: null
+        };
+
+        function handleSendOtp(event) {
+            event.preventDefault();
+            const nameVal = document.getElementById('farmerNameInput').value.trim();
+            const phoneVal = document.getElementById('farmerPhoneInput').value.trim();
+            const errBox = document.getElementById('phoneErrorMsg');
+
+            if (phoneVal.length !== 10 || !/^\d{10}$/.test(phoneVal)) {
+                errBox.classList.remove('hidden');
+                return;
+            }
+            errBox.classList.add('hidden');
+
+            appState.pendingName = nameVal || 'AgroSync';
+            appState.pendingPhone = phoneVal;
+
+            appState.currentGeneratedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('generatedOtpDisplay').textContent = appState.currentGeneratedOtp;
+            document.getElementById('displayMaskedPhone').textContent = `+91 ${phoneVal.slice(0, 2)}******${phoneVal.slice(-2)}`;
+
+            document.getElementById('loginStepPhone').classList.add('hidden');
+            document.getElementById('loginStepOtp').classList.remove('hidden');
+            document.getElementById('smsOtpPopup').classList.remove('hidden');
+
+            ['otpDigit1', 'otpDigit2', 'otpDigit3', 'otpDigit4'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('otpDigit1').focus();
+
+            startOtpCountdown();
+            showToast('SMS OTP Generated!');
+        }
+
+        function startOtpCountdown() {
+            let secondsLeft = 25;
+            const timerText = document.getElementById('resendTimerText');
+            const resendBtn = document.getElementById('resendOtpBtn');
+            resendBtn.disabled = true;
+
+            if (appState.otpTimerInterval) clearInterval(appState.otpTimerInterval);
+            appState.otpTimerInterval = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft > 0) {
+                    timerText.innerHTML = `Resend OTP in <strong class="text-slate-100">${secondsLeft}s</strong>`;
+                } else {
+                    clearInterval(appState.otpTimerInterval);
+                    timerText.textContent = "Didn't receive code?";
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        function resendNewOtp() {
+            appState.currentGeneratedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            document.getElementById('generatedOtpDisplay').textContent = appState.currentGeneratedOtp;
+            document.getElementById('smsOtpPopup').classList.remove('hidden');
+            showToast(`New SMS OTP: ${appState.currentGeneratedOtp}`);
+            startOtpCountdown();
+        }
+
+        function autofillDemoOtp() {
+            if (!appState.currentGeneratedOtp) return;
+            const digits = appState.currentGeneratedOtp.split('');
+            document.getElementById('otpDigit1').value = digits[0];
+            document.getElementById('otpDigit2').value = digits[1];
+            document.getElementById('otpDigit3').value = digits[2];
+            document.getElementById('otpDigit4').value = digits[3];
+            document.getElementById('otpErrorMsg').classList.add('hidden');
+        }
+
+        function moveOtpFocus(currentInput, nextInputId) {
+            currentInput.value = currentInput.value.replace(/[^0-9]/g, '');
+            if (currentInput.value.length === 1 && nextInputId) {
+                document.getElementById(nextInputId).focus();
+            }
+        }
+
+        function backOtpFocus(event, currentInput, prevInputId) {
+            if (event.key === 'Backspace' && currentInput.value === '' && prevInputId) {
+                document.getElementById(prevInputId).focus();
+            }
+        }
+
+        function backToPhoneStep() {
+            document.getElementById('loginStepOtp').classList.add('hidden');
+            document.getElementById('loginStepPhone').classList.remove('hidden');
+            document.getElementById('smsOtpPopup').classList.add('hidden');
+            document.getElementById('otpErrorMsg').classList.add('hidden');
+        }
+
+        async function handleVerifyOtp(event) {
+            event.preventDefault();
+            const enteredOtp =
+                document.getElementById('otpDigit1').value +
+                document.getElementById('otpDigit2').value +
+                document.getElementById('otpDigit3').value +
+                document.getElementById('otpDigit4').value;
+
+            if (enteredOtp !== appState.currentGeneratedOtp) {
+                document.getElementById('otpErrorMsg').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('otpErrorMsg').classList.add('hidden');
+            document.getElementById('smsOtpPopup').classList.add('hidden');
+            document.getElementById('authLoginOverlay').classList.add('hidden');
+
+            const sessionUser = {
+                name: appState.pendingName,
+                phone: appState.pendingPhone,
+                loginTime: new Date().toLocaleString()
+            };
+
+            try {
+                localStorage.setItem('agrosync_auth_user', JSON.stringify(sessionUser));
+            } catch (e) {}
+
+            try {
+                await fetch(`${appState.firebaseUrl}/last_logged_farmer.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sessionUser)
+                });
+            } catch (e) {}
+
+            applyLoggedInUserUI(sessionUser);
+            logCloudEvent(`🔐 Verified Login: ${sessionUser.name} (+91 ${sessionUser.phone}) via OTP.`, 'text-emerald-400');
+            showToast(`Welcome, ${sessionUser.name}!`);
+            drawTelemetryChart();
+        }
+
+        function applyLoggedInUserUI(userObj) {
+            document.getElementById('loggedFarmerName').textContent = userObj.name;
+            document.getElementById('loggedFarmerPhone').textContent = `+91 ${userObj.phone}`;
+        }
+
+        function logoutFarmer() {
+            try {
+                localStorage.removeItem('agrosync_auth_user');
+            } catch (e) {}
+            backToPhoneStep();
+            document.getElementById('authLoginOverlay').classList.remove('hidden');
+            logCloudEvent('🔒 User logged out from AgroSync Dashboard.', 'text-amber-400');
+            showToast('Logged out safely');
+        }
+
+        function evaluateCloudAutomation() {
+            const wasPumpOn = appState.pump;
+
+            if (appState.tank <= 10 && appState.pump) {
+                appState.pump = false;
+                logCloudEvent('⚠️ TANK CRITICAL (<10%): Pump auto-stopped.', 'text-rose-400');
+                return;
+            }
+
+            if (appState.moisture >= 90) {
+                appState.pump = false;
+                if (wasPumpOn) {
+                    logCloudEvent(`🛡️ 90% CUTOFF REACHED: Soil moisture is ${Math.round(appState.moisture)}% (>=90%). Pump turned OFF.`, 'text-sky-400');
+                }
+                return;
+            }
+
+            if (appState.mode === 'AUTO') {
+                if (appState.moisture < appState.threshold && appState.tank > 10) {
+                    appState.pump = true;
+                    if (!wasPumpOn) {
+                        logCloudEvent(`🤖 AUTO: Moisture (${Math.round(appState.moisture)}%) < Threshold (${appState.threshold}%). Pump turned ON.`, 'text-emerald-400');
+                    }
+                }
+            }
+        }
+
+        function updateDashboardUI() {
+            const m = Math.round(appState.moisture);
+            document.getElementById('moistureCardValue').textContent = `${m}%`;
+            document.getElementById('moistureLinearBar').style.width = `${m}%`;
+
+            const adc = Math.round(3300 - (m / 100) * 1900);
+            document.getElementById('adcRawText').textContent = `ADC: ${adc}`;
+
+            const offset = 314.16 - (m / 100) * 314.16;
+            const ring = document.getElementById('moistureRing');
+            if (ring) ring.style.strokeDashoffset = offset;
+
+            const moistPill = document.getElementById('moistureStatusPill');
+            const linearBar = document.getElementById('moistureLinearBar');
+            if (m < appState.threshold) {
+                if (ring) ring.style.stroke = '#f43f5e';
+                linearBar.className = 'h-full bg-rose-500 transition-all duration-300';
+                moistPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40';
+                moistPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span> Critical Dry';
+            } else if (m < 90) {
+                if (ring) ring.style.stroke = '#10b981';
+                linearBar.className = 'h-full bg-emerald-500 transition-all duration-300';
+                moistPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+                moistPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Irrigating / Optimal';
+            } else {
+                if (ring) ring.style.stroke = '#38bdf8';
+                linearBar.className = 'h-full bg-sky-400 transition-all duration-300';
+                moistPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/40';
+                moistPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Reached >= 90%';
+            }
+
+            document.getElementById('thresholdValBadge').textContent = `${appState.threshold}%`;
+            document.getElementById('thresholdRangeInput').value = appState.threshold;
+            document.getElementById('threshDescNum').textContent = appState.threshold;
+
+            const pumpCard = document.getElementById('pumpCardContainer');
+            const pumpPill = document.getElementById('pumpStatePill');
+            const impeller = document.getElementById('pumpImpellerIcon');
+            const relayLogic = document.getElementById('cardRelayLogic');
+            const flowRate = document.getElementById('cardFlowRate');
+            const pumpReason = document.getElementById('pumpReasonText');
+
+            if (appState.pump) {
+                pumpCard.classList.add('pump-glow', 'border-emerald-500/60');
+                pumpPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/25 text-emerald-200 border border-emerald-500/40';
+                pumpPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> PUMP ON';
+                impeller.classList.add('spin-active', 'text-emerald-300');
+                impeller.classList.remove('text-slate-500');
+                relayLogic.textContent = 'LOW (ON - 0V)';
+                relayLogic.className = 'font-mono text-emerald-300';
+                flowRate.textContent = '2.0 L/min';
+                pumpReason.textContent = 'Stays ON till 90%';
+                pumpReason.className = 'text-emerald-300 font-semibold';
+            } else {
+                pumpCard.classList.remove('pump-glow', 'border-emerald-500/60');
+                pumpPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800/80 text-slate-300 border border-slate-700';
+                pumpPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> PUMP OFF';
+                impeller.classList.remove('spin-active', 'text-emerald-300');
+                impeller.classList.add('text-slate-500');
+                relayLogic.textContent = 'HIGH (OFF - 3.3V)';
+                relayLogic.className = 'font-mono text-slate-400';
+                flowRate.textContent = '0.0 L/min';
+                pumpReason.textContent = 'Moisture >= 90%';
+                pumpReason.className = 'text-sky-300 font-semibold';
+            }
+
+            document.getElementById('tempCardValue').textContent = `${appState.temperature.toFixed(1)}°C`;
+            document.getElementById('humCardValue').textContent = `${Math.round(appState.humidity)}%`;
+            const tankInt = Math.round(appState.tank);
+            document.getElementById('tankCardValue').textContent = `${tankInt}%`;
+            document.getElementById('tankLitersText').textContent = `~${tankInt * 5} Liters`;
+            document.getElementById('tankLevelBar').style.width = `${tankInt}%`;
+
+            document.getElementById('cardModeText').textContent = `${appState.mode} MODE`;
+            const btnAuto = document.getElementById('modeAutoBtn');
+            const btnManual = document.getElementById('modeManualBtn');
+            const remoteBtn = document.getElementById('remotePumpBtn');
+            const remoteBtnText = document.getElementById('remotePumpBtnText');
+
+            if (appState.mode === 'AUTO') {
+                btnAuto.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 bg-emerald-600 text-white shadow transition-all';
+                btnManual.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-300 hover:text-white transition-all';
+                remoteBtn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-slate-800/80 text-slate-400 border border-slate-700 cursor-not-allowed';
+                remoteBtnText.textContent = appState.pump ? 'Auto ON' : 'Auto OFF';
+            } else {
+                btnManual.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 bg-amber-500 text-slate-950 shadow transition-all';
+                btnAuto.className = 'py-2.5 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 text-slate-300 hover:text-white transition-all';
+                if (appState.pump) {
+                    remoteBtn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white shadow cursor-pointer';
+                    remoteBtnText.textContent = 'Turn Pump OFF';
+                } else {
+                    remoteBtn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white shadow cursor-pointer';
+                    remoteBtnText.textContent = 'Turn Pump ON';
+                }
+            }
+        }
+
+        function changeMode(newMode) {
+            appState.mode = newMode;
+            logCloudEvent(`☁️ Mode switched to ${newMode} MODE.`, 'text-amber-300');
+            evaluateCloudAutomation();
+            updateDashboardUI();
+            pushStateToDatabaseRest();
+            showToast(`Switched to ${newMode} MODE`);
+        }
+
+        function toggleRemotePump() {
+            if (appState.mode !== 'MANUAL') {
+                showToast('Switch to MANUAL MODE first!');
+                return;
+            }
+            appState.pump = !appState.pump;
+            logCloudEvent(`🖐️ Manual Pump turned ${appState.pump ? 'ON' : 'OFF'}.`, appState.pump ? 'text-emerald-300' : 'text-rose-400');
+            updateDashboardUI();
+            pushStateToDatabaseRest();
+        }
+
+        function changeThreshold(val) {
+            appState.threshold = parseInt(val, 10);
+            evaluateCloudAutomation();
+            updateDashboardUI();
+            pushStateToDatabaseRest();
+        }
+
+        function selectCropPreset(cropName, threshVal) {
+            appState.threshold = threshVal;
+            logCloudEvent(`🌾 Preset: ${cropName} (Threshold set to ${threshVal}%).`, 'text-sky-300');
+            evaluateCloudAutomation();
+            updateDashboardUI();
+            pushStateToDatabaseRest();
+            showToast(`${cropName} Preset Synced!`);
+        }
+
+        async function pushStateToDatabaseRest() {
+            if (!appState.isLiveFirebase || !appState.firebaseUrl) return;
+            try {
+                await fetch(`${appState.firebaseUrl}/irrigation.json`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        moisture: Math.round(appState.moisture),
+                        threshold: appState.threshold,
+                        mode: appState.mode,
+                        pump: appState.pump
+                    })
+                });
+            } catch (err) {}
+        }
+
+        async function pullStateFromDatabaseRest() {
+            if (!appState.isLiveFirebase || !appState.firebaseUrl) return;
+            try {
+                const res = await fetch(`${appState.firebaseUrl}/irrigation.json`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && typeof data === 'object') {
+                    if (typeof data.moisture === 'number') appState.moisture = data.moisture;
+                    if (typeof data.temp === 'number') appState.temperature = data.temp;
+                    if (typeof data.humidity === 'number') appState.humidity = data.humidity;
+                    if (typeof data.tank === 'number') appState.tank = data.tank;
+                    if (typeof data.pump === 'boolean') appState.pump = data.pump;
+                }
+            } catch (err) {}
+        }
+
+        function drawTelemetryChart() {
+            const canvas = document.getElementById('cloudChartCanvas');
+            if (!canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            const w = rect.width;
+            const h = rect.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const padLeft = 38, padRight = 18, padTop = 18, padBottom = 26;
+            const plotW = w - padLeft - padRight;
+            const plotH = h - padTop - padBottom;
+
+            ctx.strokeStyle = 'rgba(51, 65, 85, 0.45)';
+            ctx.lineWidth = 1;
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11px Inter, sans-serif';
+            [0, 25, 50, 75, 100].forEach(pct => {
+                const y = padTop + plotH - (pct / 100) * plotH;
+                ctx.beginPath();
+                ctx.moveTo(padLeft, y);
+                ctx.lineTo(w - padRight, y);
+                ctx.stroke();
+                ctx.fillText(`${pct}%`, 6, y + 4);
+            });
+
+            const shutoffY = padTop + plotH - (90 / 100) * plotH;
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1.8;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.moveTo(padLeft, shutoffY);
+            ctx.lineTo(w - padRight, shutoffY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const pts = appState.history;
+            if (pts.length < 2) return;
+            const stepX = plotW / (pts.length - 1);
+
+            ctx.beginPath();
+            pts.forEach((val, idx) => {
+                const x = padLeft + idx * stepX;
+                const y = padTop + plotH - (val / 100) * plotH;
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+
+        function logCloudEvent(msg, colorClass = 'text-slate-200') {
+            const box = document.getElementById('cloudEventLogBox');
+            if (!box) return;
+            const nowStr = new Date().toLocaleTimeString([], { hour12: false });
+            const div = document.createElement('div');
+            div.className = colorClass;
+            div.textContent = `[${nowStr}] ${msg}`;
+            box.prepend(div);
+        }
+
+        function clearCloudLogs() {
+            document.getElementById('cloudEventLogBox').innerHTML = '';
+        }
+
+        function exportTelemetryCsv() {
+            const csvContent = appState.csvRows.map(r => r.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AgroSync_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('CSV Report Downloaded!');
+        }
+
+        function showToast(message) {
+            const banner = document.getElementById('toastBanner');
+            document.getElementById('toastText').textContent = message;
+            banner.classList.remove('hidden');
+            setTimeout(() => banner.classList.add('hidden'), 3000);
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const imgEl = document.getElementById('customLogoImg');
+                const svgEl = document.getElementById('defaultSvgLogo');
+                imgEl.src = dataUrl;
+                imgEl.classList.remove('hidden');
+                svgEl.classList.add('hidden');
+                try {
+                    localStorage.setItem('agrosync_custom_logo', dataUrl);
+                    showToast('Custom Logo Updated & Saved!');
+                } catch (err) {
+                    showToast('Logo Updated!');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function cloudTelemetryTick() {
+            await pullStateFromDatabaseRest();
+
+            if (!appState.isLiveFirebase) {
+                if (appState.pump) {
+                    appState.moisture = Math.min(95, appState.moisture + 3.0);
+                    appState.tank = Math.max(0, appState.tank - 0.25);
+                } else {
+                    appState.moisture = Math.max(12, appState.moisture - 0.5);
+                }
+            }
+
+            evaluateCloudAutomation();
+            updateDashboardUI();
+
+            const roundedM = Math.round(appState.moisture);
+            appState.history.push(roundedM);
+            if (appState.history.length > 16) appState.history.shift();
+
+            appState.csvRows.push([
+                new Date().toLocaleTimeString([], { hour12: false }),
+                roundedM,
+                appState.threshold,
+                appState.mode,
+                appState.pump ? 'ON' : 'OFF',
+                appState.temperature.toFixed(1),
+                Math.round(appState.humidity)
+            ]);
+
+            drawTelemetryChart();
+        }
+
+        window.addEventListener('resize', drawTelemetryChart);
+
+        window.onload = function () {
+            const savedLogo = localStorage.getItem('agrosync_custom_logo');
+            if (savedLogo) {
+                const imgEl = document.getElementById('customLogoImg');
+                const svgEl = document.getElementById('defaultSvgLogo');
+                imgEl.src = savedLogo;
+                imgEl.classList.remove('hidden');
+                svgEl.classList.add('hidden');
+            }
+
+            try {
+                const savedAuth = localStorage.getItem('agrosync_auth_user');
+                if (savedAuth) {
+                    const parsedUser = JSON.parse(savedAuth);
+                    if (parsedUser && parsedUser.phone) {
+                        applyLoggedInUserUI(parsedUser);
+                        document.getElementById('authLoginOverlay').classList.add('hidden');
+                    }
+                }
+            } catch (err) {}
+
+            logCloudEvent('🌾 AgroSync Dashboard Initialized.', 'text-emerald-300');
+            evaluateCloudAutomation();
+            updateDashboardUI();
+            drawTelemetryChart();
+            setInterval(cloudTelemetryTick, 1500);
+        };
+    </script>
+</body>
+</html>
