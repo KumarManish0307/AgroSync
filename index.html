@@ -6,7 +6,7 @@
     <title>AgroSync Dashboard</title>
     <link rel="icon" type="image/x-icon" href="Green Vintage Agriculture and Farming Logo (1).ico">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -16,6 +16,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        slogan: ['Montserrat', 'sans-serif'],
                     }
                 }
             }
@@ -53,6 +54,14 @@
             border: 1px solid rgba(52, 211, 153, 0.35);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+        }
+        .slogan-text {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(90deg, #6ee7b7 0%, #fbbf24 50%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.16em;
+            text-shadow: 0 2px 12px rgba(16, 185, 129, 0.25);
         }
     </style>
 </head>
@@ -118,6 +127,9 @@
                     </span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">AgroSync Login</h2>
+                <p class="slogan-text text-[11px] sm:text-xs font-extrabold uppercase mt-1">
+                    WATER SMARTER, GROW BETTER
+                </p>
                 <p class="text-xs text-slate-300 mt-1">Verify mobile number to access rice paddy irrigation</p>
             </div>
 
@@ -269,10 +281,20 @@
                             <span id="cloudStatusText">Firebase Connected</span>
                         </span>
                     </div>
+                    <p class="slogan-text text-[10px] sm:text-xs font-black uppercase mt-0.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-seedling text-emerald-400 text-[10px]"></i>
+                        WATER SMARTER, GROW BETTER
+                    </p>
                 </div>
             </div>
 
             <div class="flex items-center gap-3 flex-wrap">
+                <div class="hidden xl:flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/50 border border-emerald-500/30 shadow-inner">
+                    <i class="fa-solid fa-droplet text-sky-400 text-xs animate-bounce"></i>
+                    <span class="slogan-text text-xs font-black uppercase">
+                        WATER SMARTER, GROW BETTER
+                    </span>
+                </div>
                 <div id="headerUserBadge" class="flex items-center gap-2.5 bg-slate-950/50 px-3 py-1.5 rounded-xl border border-slate-800">
                     <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-bold">
                         <i class="fa-solid fa-user-shield"></i>
